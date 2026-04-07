@@ -4,6 +4,9 @@
 # Python virtual environment
 .venv/
 venv/
+env/
+ENV/
+myenv/
 .env/
 # Python bytecode
 __pycache__/
