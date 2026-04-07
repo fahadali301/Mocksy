@@ -7,4 +7,4 @@ class CV(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     file_path = Column(String)
-    extracted_data = Column(JSON)
+    extracted_data = Column(JSON,default={})
