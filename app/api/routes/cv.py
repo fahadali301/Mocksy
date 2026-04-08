@@ -33,7 +33,7 @@ async def upload_cv(
     # ✅ Save file
     try:
         with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            buffer.write(file.file.read())
     except Exception:
         raise HTTPException(status_code=500, detail="Failed to save file")
 
@@ -49,7 +49,7 @@ async def upload_cv(
         db=db,
         user_id=current_user,
         file_path=file_path,
-        extracted_data= extracted_text
+        extracted_data={"text": extracted_text}
     )
 
     return {
