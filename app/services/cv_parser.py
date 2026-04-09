@@ -29,7 +29,7 @@ class CVParserService:
         Extract structured blocks (future use: NLP parsing)
         """
         try:
-            doc = fitz.open(file_path)
+            doc = pymupdf.open(file_path)
             data = []
 
             for page_num, page in enumerate(doc):
