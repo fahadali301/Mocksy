@@ -13,7 +13,7 @@ The interview is now stateful and dynamic:
 ### 1) Upload CV
 `POST /cv/upload`
 
-Returns CV metadata and preview text. It no longer returns a fixed list of 5 questions.
+Returns CV metadata and preview text.
 
 ### 2) Start Interview
 `POST /interview/start`
