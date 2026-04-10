@@ -60,6 +60,7 @@ def start_interview(
 		"interview_id": interview.id,
 		"status": interview.status,
 		"next_question": next_question,
+		"powered_by": AIService.get_last_provider(),
 	}
 
 
@@ -116,6 +117,7 @@ def submit_turn(
 			"interview_id": interview.id,
 			"status": "completed",
 			"result": final_result,
+			"powered_by": AIService.get_last_provider(),
 		}
 
 	answer_crud.create_answer(db, latest_question.id, answer_text)
@@ -137,5 +139,6 @@ def submit_turn(
 		"interview_id": interview.id,
 		"status": "active",
 		"next_question": next_question,
+		"powered_by": AIService.get_last_provider(),
 	}
 
