@@ -1,18 +1,26 @@
 import requests
 import json
 import re
+import os
+
+USE_GROQ = False
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 
 class AIService:
     OLLAMA_URL = "http://localhost:11434/api/generate"
     MODEL = "llama3"
+    last_provider = None  # Tracks "groq" or "ollama"
 
     @staticmethod
     def _extract_json(text: str):
-        """Extract JSON from response, handling markdown code blocks and whitespace."""
+        """Extract JSON from response, handling Markdown code blocks and whitespace."""
         text = text.strip()
 
-        # Try to extract JSON from markdown code block: ```json ... ```
+        # Try to extract JSON from a Markdown code block: ```json ... ```
         match = re.search(r'```(?:json)?\s*([\s\S]*?)```', text)
         if match:
             text = match.group(1).strip()
@@ -192,6 +200,20 @@ Return ONLY JSON like:
     # 🔥 COMMON METHOD (clean code)
     @staticmethod
     def _call_model(prompt: str) -> str:
+        if USE_GROQ:
+            AIService.last_provider = "groq"
+            return AIService._call_groq(prompt)
+        else:
+            AIService.last_provider = "ollama"
+            return AIService._call_ollama(prompt)
+
+    @staticmethod
+    def get_last_provider() -> str:
+        """Returns which provider served the last response: 'groq' or 'ollama'."""
+        return AIService.last_provider or "unknown"
+
+    @staticmethod
+    def _call_ollama(prompt: str) -> str:
 
         try:
             response = requests.post(
@@ -216,3 +238,88 @@ Return ONLY JSON like:
 
         except requests.exceptions.RequestException as e:
             raise Exception(f"AI connection failed: {str(e)}")
+
+    @staticmethod
+    def _call_groq(prompt: str) -> str:
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": [
+                {"role": "system", "content": "You are a professional interviewer."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7
+        }
+
+        response = requests.post(GROQ_URL, headers=headers, json=payload)
+
+        if response.status_code != 200:
+            raise Exception(response.text)
+
+        return response.json()["choices"][0]["message"]["content"]
+
+    @staticmethod
+    def stream_model(prompt: str):
+
+        if USE_GROQ:
+            yield from AIService._stream_groq(prompt)
+        else:
+            yield from AIService._stream_ollama(prompt)
+
+    @staticmethod
+    def _stream_groq(prompt: str):
+
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": [
+                {"role": "system", "content": "You are a professional interviewer."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "stream": True
+        }
+
+        with requests.post(GROQ_URL, headers=headers, json=payload, stream=True) as r:
+            for line in r.iter_lines():
+                if line:
+                    decoded = line.decode("utf-8")
+
+                    if decoded.startswith("data: "):
+                        data = decoded.replace("data: ", "")
+
+                        if data == "[DONE]":
+                            break
+
+                        try:
+                            json_data = json.loads(data)
+                            delta = json_data["choices"][0]["delta"].get("content", "")
+                            if delta:
+                                yield delta
+                        except:
+                            continue
+
+    @staticmethod
+    def _stream_ollama(prompt: str):
+
+        payload = {
+            "model": AIService.MODEL,
+            "prompt": prompt,
+            "stream": True
+        }
+
+        with requests.post(AIService.OLLAMA_URL, json=payload, stream=True) as r:
+            for line in r.iter_lines():
+                if line:
+                    data = json.loads(line.decode("utf-8"))
+                    if "response" in data:
+                        yield data["response"]
