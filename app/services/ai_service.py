@@ -3,7 +3,7 @@ import json
 import re
 import os
 
-USE_GROQ = False
+USE_GROQ = os.getenv("GROQ_ENABLED")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
