@@ -36,7 +36,7 @@ export default function Interview() {
 
     // Connect to WebSocket
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//localhost:8000/ws/interview?token=${token}`;
+    const wsUrl = `${protocol}//${window.location.hostname}:8000/ws/interview?token=${token}`;
     const ws = new WebSocket(wsUrl);
     socketRef.current = ws;
 
