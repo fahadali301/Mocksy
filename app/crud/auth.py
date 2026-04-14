@@ -4,8 +4,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
+import os
 
-SECRET_KEY = "mysecret"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
