@@ -10,9 +10,9 @@ from app.crud import cv as cv_crud
 from app.crud import interview as interview_crud
 from app.crud import question as question_crud
 from app.services.ai_service import AIService
-
+import os
 # Reuse the same secret / algorithm used by the REST auth layer.
-SECRET_KEY = "mysecret"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 router = APIRouter()
