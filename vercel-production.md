@@ -21,7 +21,7 @@ In Vercel Project → **Settings** → **Environment Variables**, add:
 - `DEBUG` = `False`
 - `GROQ_ENABLED` = `True` (optional, but recommended for current AI flow)
 
-Use `.env.example` as the source of truth for variable names.
+Use `.env.production` as the production template and `.env.example` for local defaults.
 
 ## 4) Routing and serverless handler
 - `api/index.py` is the Vercel serverless entry point.
@@ -44,3 +44,5 @@ Expected health response:
 - **401/Token issues**: confirm `SECRET_KEY` and `ALGORITHM` values.
 - **AI not responding**: check `GROQ_API_KEY` and `GROQ_ENABLED`.
 - **Route not found**: make sure requests go through `/api/...`.
+
+For a full crash-specific checklist, see `vercel-fix.md`.
