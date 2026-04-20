@@ -26,4 +26,6 @@ services:
 
 databases:
   - name: mocksy-db
+    databaseName: mocksy_db
+    user: mocksy_user
     plan: free
