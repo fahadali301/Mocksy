@@ -1,4 +1,4 @@
-import Mangum
+from mangum import Mangum
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.auth import router as auth_router
@@ -12,7 +12,7 @@ from app.models import answer, cv, interview, question, report, user  # noqa: F4
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="Mocksy API")
 
 # ✅ Add CORS middleware for React
 app.add_middleware(
@@ -28,4 +28,9 @@ app.include_router(cv_router)
 app.include_router(interview_router)
 app.include_router(ws_router)
 
-handler = Mangum(app)
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "Mocksy API is running"}
+
+# Mangum handler for Vercel
+handler = Mangum(app, lifespan="off")
