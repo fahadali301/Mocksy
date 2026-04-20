@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta
 
-from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
-import models
-from core.database import get_db
+import os
 
-SECRET_KEY = "mysecret"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -35,5 +33,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         user_id = payload.get("user_id")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
 
     return user_id

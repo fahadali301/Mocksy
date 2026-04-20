@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF
+import pymupdf
 from typing import Dict
 
 
@@ -10,7 +10,7 @@ class CVParserService:
         Extract full text from PDF
         """
         try:
-            doc = fitz.open(file_path)
+            doc = pymupdf.open(file_path)
             text = ""
 
             for page in doc:
@@ -29,7 +29,7 @@ class CVParserService:
         Extract structured blocks (future use: NLP parsing)
         """
         try:
-            doc = fitz.open(file_path)
+            doc = pymupdf.open(file_path)
             data = []
 
             for page_num, page in enumerate(doc):

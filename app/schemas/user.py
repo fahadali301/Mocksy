@@ -4,6 +4,7 @@ class UserCreateSchema(BaseModel):
     name: str
     email: str
     password: str
+    designation: str
 
 class UserResponseSchema(BaseModel):
     id: int
@@ -16,3 +17,9 @@ class UserResponseSchema(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
