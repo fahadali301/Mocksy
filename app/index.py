@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.auth import router as auth_router
 from app.api.routes.cv import router as cv_router
 from app.api.routes.interview import router as interview_router
-from app.api.routes.ws_interview import router as ws_router
 from app.core.database import Base, engine
 
 # Import models so SQLAlchemy registers all tables on Base.metadata.
@@ -25,4 +24,3 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(cv_router)
 app.include_router(interview_router)
-app.include_router(ws_router)
