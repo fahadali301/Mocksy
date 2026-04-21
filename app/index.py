@@ -23,6 +23,6 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
-app.include_router(cv_router)
+# app.include_router(cv_router)
 app.include_router(interview_router)
 app.include_router(ws_router)

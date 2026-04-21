@@ -10,6 +10,8 @@ from app.crud.auth import get_current_user
 
 router = APIRouter(prefix="/cv", tags=["CV"])
 
+import os
+
 UPLOAD_DIR = "/tmp/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
